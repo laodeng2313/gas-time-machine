@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gas Time Machine · Sample demo</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101722;color:#edf2fa}
+body{max-width:880px;margin:auto;padding:64px 24px}.tag{color:#8be4bd;letter-spacing:.12em;font-size:.8rem}
+h1{font-size:clamp(2.6rem,7vw,4.5rem);letter-spacing:-.06em;margin:16px 0}p{color:#b9c6d8;line-height:1.7}
+.controls,.cards{display:flex;gap:18px;flex-wrap:wrap;margin:28px 0}label{flex:1;min-width:190px}
+input{display:block;box-sizing:border-box;width:100%;margin-top:10px;padding:12px;border:1px solid #42536b;border-radius:8px;background:#172231;color:white;font:inherit}
+article{flex:1;min-width:200px;background:#1a2738;border:1px solid #34445a;border-radius:16px;padding:22px}h2{font-size:.9rem;color:#b9c6d8}output{font-size:1.65rem;font-weight:650}.accent,a{color:#8be4bd}small{line-height:1.6;color:#b9c6d8}
+</style>
+<main>
+<div class="tag">ETHEREUM / OFFLINE SAMPLE</div>
+<h1>What if you waited?</h1>
+<p>Explore a cheaper-gas scenario with transparent sample data. Change gas used and the baseline price to see the difference. This demo does not fetch live prices.</p>
+<div class="controls">
+<label>Gas used<input id="gas" type="number" min="1" max="100000000" step="1" value="21000"></label>
+<label>Baseline gas price (gwei)<input id="price" type="number" min="0" max="100000" step="0.1" value="30"></label>
+</div>
+<p id="error" role="alert"></p>
+<div class="cards" aria-live="polite">
+<article><h2>Baseline execution fee</h2><output id="baseline"></output></article>
+<article><h2>Cheaper-gas scenario</h2><output id="waiting"></output></article>
+<article><h2>Potential savings</h2><output class="accent" id="savings"></output></article>
+</div>
+<p>Sample current suggested caps: <strong>26 gwei max / 2 gwei priority</strong>. Illustrative only; caps are not amounts charged.</p>
+<small>Fixture block prices (base fee + median tip): 10, 12, 14, 16, 18, 20, 24, 30 gwei. The nearest-rank 25th percentile is 12 gwei. Same gas used in both scenarios; savings floored at zero. This backward-looking heuristic cannot predict future gas or guarantee inclusion. Execution fees only. Not financial advice.</small>
+<p><a href="https://github.com/laodeng2313/gas-time-machine">View source & run the live CLI →</a></p>
+</main>
+<script>
+const gas = document.querySelector('#gas'), price = document.querySelector('#price');
+function render() {
+  const used = Number(gas.value), rate = Number(price.value);
+  const valid = gas.value !== '' && price.value !== '' && Number.isSafeInteger(used) && used > 0 && used <= 100000000 && Number.isFinite(rate) && rate >= 0 && rate <= 100000;
+  document.querySelector('#error').textContent = valid ? '' : 'Enter positive whole gas units (up to 100 million) and a price from 0 to 100,000 gwei.';
+  const baseline = used * rate / 1e9, waiting = used * 12 / 1e9;
+  for (const [id, value] of [['baseline', baseline], ['waiting', waiting], ['savings', Math.max(0, baseline - waiting)]]) {
+    document.querySelector('#' + id).textContent = valid ? value.toFixed(6) + ' ETH' : '—';
+  }
+}
+gas.addEventListener('input', render); price.addEventListener('input', render); render();
+</script>
+</html>

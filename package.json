@@ -1,0 +1,36 @@
+{
+  "name": "gas-time-machine",
+  "version": "1.0.0",
+  "description": "Explore Ethereum transaction fees and an honest cheaper-gas counterfactual",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "gas-time-machine": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "web",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "start": "tsx src/cli.ts",
+    "cli": "tsx src/cli.ts",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "viem": "^2.38.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.12"
+  }
+}
